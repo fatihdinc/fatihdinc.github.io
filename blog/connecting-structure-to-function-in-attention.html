@@ -49,7 +49,7 @@
         </header>
 
         <div class="article-body">
-          <p class="article-lead"><em>TLDR:</em> A neural network may contain many learned parameters while using only a small part for a specific behavior. I introduce a method based on activations of an attention layer that identifies a low-rank reconstruction of the learned key-query matrices and preserves its performance. This links what the model does (function) to how its learned connections are organized (structure). It may also give us the backbone of a method for future causal tests in LLMs that does not require any training beyond inference.</p>
+          <p class="article-lead"><em>TLDR:</em> A neural network may contain many learned parameters while using only a small part for a specific behavior. I apply a method based on activations of an attention layer that identifies a low-rank reconstruction of the learned key-query matrices and preserves its performance. This links what the model does (function) to how its learned connections are organized (structure). It may also give us the backbone of a method for future causal tests in LLMs that does not require any training beyond inference.</p>
 
           <figure class="article-figure article-figure-data">
             <img src="../assets/blog/attention/functional-rank.png?v=4" width="2573" height="1541" alt="Accuracy after projecting the attention rule onto the query or key subspace, or reconstructing it with SVD">
@@ -86,7 +86,7 @@
 
           <h2>Why this could matter for LLM safety</h2>
 
-          <p>This experiment contains no language and no unsafe behavior. Some of its task-specific structure was built into the artificial data. It is a controlled proof of principle, not evidence that an LLM can already be steered this way. Still, the connection to LLM safety is not far-fetched, e.g., one would certainly wish to identify low-rank components of learned parameters that are causally linked to specific (harmful) behaviors. The Gram matrix based low-rank reconstruction provides one cheap method for achieving this that requires no additional training.</p>
+          <p>This experiment contains no language and no unsafe behavior. Some of its task-specific structure was built into the artificial data. It is a controlled proof of principle, not evidence that an LLM can already be steered this way. Still, the connection to LLM safety is not far-fetched. For instance, <a href="https://arxiv.org/abs/2401.15024v2">SliceGPT</a> has used a similar method for compressing large models, and there are several other recent papers that use activation-aware compression methods. In general, this simple experiment is showing one approach (requiring no new training) through which these methods can be used to identify low-rank components of learned parameters that are causally linked to specific (harmful) behaviors.</p>
 
           <p>The next step of this research is to test necessity and selectivity in a pretrained language model. We could use natural-language prompts to find a small part linked to a particular task, then remove or strengthen it. The hope is to find a plausible steering target. This is related to, but distinct from, <a href="https://arxiv.org/abs/2106.09685">low-rank adaptation</a>, which learns new low-rank updates during training. Here, the goal is to identify an existing, behavior-linked part of a trained model. If the method transfers, candidate directions could be estimated from activations collected during ordinary forward passes, without retraining the model.</p>
 
