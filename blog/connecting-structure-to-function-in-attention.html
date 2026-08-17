@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="A simple attention model preserves almost all of its performance using a lower-rank attention rule, linking function to structure and motivating causal tests in LLMs.">
+    <meta name="author" content="Fatih Dinc">
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+    <link rel="canonical" href="https://fatihdinc.github.io/blog/connecting-structure-to-function-in-attention.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Towards connecting structure and function in attention?">
+    <meta property="og:description" content="A small attention model can look complicated while using a much smaller, task-specific part of what it learned.">
+    <meta property="og:url" content="https://fatihdinc.github.io/blog/connecting-structure-to-function-in-attention.html">
+    <meta property="og:image" content="https://fatihdinc.github.io/assets/og.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Towards connecting structure and function in attention?">
+    <meta name="twitter:description" content="A small attention model can look complicated while using a much smaller, task-specific part of what it learned.">
+    <meta name="twitter:image" content="https://fatihdinc.github.io/assets/og.png">
+    <title>Towards connecting structure and function in attention? | Fatih Dinc</title>
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header class="site-header" data-header>
+      <div class="header-inner">
+        <a class="site-name" href="../index.html">Fatih Dinc</a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-menu-toggle>
+          <span class="sr-only">Toggle navigation</span>
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="site-nav" aria-label="Primary" data-menu>
+          <a href="../index.html#research">Research</a>
+          <a href="../index.html#selected-work">Selected work</a>
+          <a href="../index.html#writing" aria-current="page">Writing</a>
+          <a href="https://scholar.google.com.tr/citations?user=jFHyg0oAAAAJ&amp;hl=en">Publications</a>
+          <a href="../Fatih_CV_Main.pdf">CV</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <article class="article page-width">
+        <header class="article-header">
+          <p class="article-kicker">Research note · August 2026</p>
+          <h1>Towards connecting structure and function in attention?</h1>
+          <p class="article-deck">A small model can look complicated while using a much smaller, task-specific part of what it learned.</p>
+        </header>
+
+        <div class="article-body">
+          <p class="article-lead">A neural network may contain many learned connections while using only a small, task-specific part for one behavior. In this blog post, I show that a simple attention model can preserve almost all of its performance using a much lower-rank version of its attention rule. This links what the model does (function) to how its learned connections are organized (structure). It may also give us the backbone of a method for future causal tests in LLMs.</p>
+
+          <h2>The idea from neuroscience</h2>
+
+          <p>Some early interpretability work searched for <a href="https://aclanthology.org/2022.acl-long.581/">individual artificial neurons associated with particular facts</a>. Neuroscience, too, once searched for single neurons that represented a stimulus, place, or choice. The famous <a href="https://en.wikipedia.org/wiki/Concept_cell">“Jennifer Aniston neuron”</a> is a well-known example of this single-neuron view. More recent research instead argues that many computations are better understood as coordinated patterns across groups of neurons.</p>
+
+          <p>How that coordination is achieved, however, has remained a mystery for a long time. We refer to this as the problem of <em>connecting structure (parameters) to function (computation).</em> Recent theoretical work on <a href="https://doi.org/10.1016/j.neuron.2018.07.003">low-rank recurrent neural networks (RNNs)</a> suggests that these shared activity patterns, also called “latent variables,” are mathematically reflected in how neurons are connected to each other. In these theories, the <strong>matrix rank</strong> of the connections becomes a fundamental unit of neural computation in that it counts how many independent patterns the connections can carry.</p>
+
+          <p>In this formulation, we ask not only which latent variables support a computation, but also <em>how the parameters of the model give rise to those variables</em>. My <a href="https://www.biorxiv.org/content/10.64898/2026.07.10.737763v1">PhD work</a> studies this link across several kinds of biologically plausible RNNs and explains several disjointed empirical phenomena under a few common basic principles.</p>
+
+          <p>Of course, the inverse problem is at least as interesting, if not more practically relevant. A model may contain many parameters that have nothing to do with the computation at hand. Can its activity tell us which parts matter? In <a href="https://openreview.net/forum?id=Ucw3Hl28Wo">recent work</a>, we studied a method based on the observed activity of units in a network to answer this question in RNN models of neural computation. Here I extend this result to a simple attention model and ask: can examples from a task tell us which part of a trained model is enough to preserve what it does?</p>
+
+          <h2>A brief introduction to the method</h2>
+
+          <p>A neural-network layer receives a pattern of activity, which we call <em>x</em>. Its learned connections, <em>W</em>, transform that activity into <em>Wx</em>, which then passes through other types of transformations. In biology, <em>x</em> corresponds to neural activity and <em>W</em> to the strengths of the connections between neurons. With these defined, the overall question is deceptively simple: When a network performs one task, which parts of <em>W</em> actually matter?</p>
+
+          <p>It turns out that one plausible answer is simple. One should simply collect all patterns of activity {<em>x</em>(<em>t</em>)} observed during a particular task. A <strong>Gram matrix</strong>, <em>G</em><sub>x</sub> = ⟨<em>xx</em><sup>T</sup>⟩, summarizes these observations. Its leading directions are the activity patterns that the task uses most, making them natural candidates for the parts of <em>W</em> that matter. More on this connection can be found <a href="https://openreview.net/forum?id=Ucw3Hl28Wo">here</a>.</p>
+
+          <p>Attention, unlike traditional RNNs, has two types of inputs, which enables a trivial extension of the Gram matrix. An attention layer compares a query <em>q</em> with a key <em>k</em> through a matching rule of the form <em>q</em><sup>T</sup><em>Mk</em>, where <em>M</em> is a combination of the learned key and query matrices. The extension of the method involves building one Gram matrix from the queries and another from the keys. One then uses their leading directions to decide which patterns of the trained matrix <em>M</em> to keep.</p>
+
+          <h2>A small attention test</h2>
+
+          <p>Imagine giving a model one request and 64 index cards. Attention compares the request with every card and uses the strongest matches to choose an answer. I trained 20 copies of this small model, from different random starting points, on ten artificial tasks simultaneously. Some tasks required an exact match; others used incomplete information, priorities, or a vote. More methodological details are available in the <a href="https://github.com/fatihdinc/attention-identifiability">public GitHub repository</a>. This test deliberately does not use a language model. Rather, the simplicity of a single attention layer lets us study and extend the connection between structure and function.</p>
+
+          <p>The query and key parameters work together to produce a rule for matching each request to the cards. I studied this combined rule, then tested how much of it I could remove while preserving the answers. Here, rank counts how many independent matching patterns are kept. I used the observed queries or keys to decide which patterns to keep, then tested the newly constructed “simpler” attention layer (i.e., one with a much lower rank) on new trials.</p>
+
+          <p class="figure-guide"><strong>How to read Figure 1:</strong> moving right means keeping more of the original attention rule. Moving up means answering more test examples correctly.</p>
+
+          <figure class="article-figure article-figure-data">
+            <img src="../assets/blog/attention/functional-rank.png" width="2573" height="1798" alt="Accuracy after keeping patterns chosen from queries, candidate items, or two standard compression methods">
+            <figcaption><strong>Figure 1.</strong> At each point, the model is retested after part of its attention rule is removed. Curves first average the ten tasks within each model. Dots show the mean across 20 models, and shaded regions show one standard deviation.</figcaption>
+          </figure>
+
+          <p>At rank 24, the version chosen from queries was correct <strong>89%</strong> of the time, close to <strong>94%</strong> for the full model. Standard compression using a singular value decomposition, which looked only at the learned weights but not the activations, reached <strong>52%</strong>. By design, the artificial inputs never use some available patterns. I therefore added a new comparison, which used the Gram matrices defined on keys and queries. Specifically, I removed the parts of the rule that no query or key could use, i.e., those directions that were associated with the null-space of the Gram matrices. SVD-based reconstruction on this “task-specific” matrix then reached <strong>90%</strong> at rank 24, showing that a rank-24 reconstruction of the combined query–key scoring rule preserved most of the model's average performance.</p>
+
+          <p><em>What is interesting here?</em> The combined matching rule across all 10 tasks could technically live in a 128-dimensional space. Yet most of the model's performance could be preserved with only 24 task-selected patterns. Most importantly, we selected those patterns <strong>without any additional training</strong>, using the activity observed during normal task operation and the already-trained attention rule. Finally, the <a href="https://github.com/fatihdinc/attention-identifiability">repository</a> contains an additional control showing that the useful query-selected directions depended on the task: after matching the explicit task tag, directions selected from other tasks transferred poorly.</p>
+
+          <h2>Why this could matter for LLM safety</h2>
+
+          <p>This experiment contains no language and no unsafe behavior. Some of its task-specific structure was built into the artificial data. It is a controlled proof of principle, not evidence that an LLM can already be steered this way. Still, the connection to LLM safety is not far-fetched, e.g., one would certainly wish to identify low-rank components of learned parameters that are causally linked to specific (harmful) behaviors.</p>
+
+          <p>The next step of this research is to test necessity and selectivity in a pretrained language model. We could use natural-language prompts to find a small part linked to a task, then remove or strengthen it. The hope is to find a plausible steering target. This is related to, but distinct from, <a href="https://arxiv.org/abs/2106.09685">low-rank adaptation</a>, which learns new low-rank updates during training. Here, the goal is to identify an existing, task-linked part of a trained model. If the method transfers, candidate directions could be estimated from activations collected during ordinary forward passes, without retraining the model.</p>
+
+          <div class="article-footer-links">
+            <a href="https://github.com/fatihdinc/attention-identifiability">Code, data pipeline, and audit trail</a>
+            <a href="../index.html#writing">Back to writing</a>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <div class="page-width">© 2026 Fatih Dinc</div>
+    </footer>
+
+    <script src="../script.js" defer></script>
+  </body>
+</html>
