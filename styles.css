@@ -379,6 +379,12 @@ button {
   padding-block: 1rem 0;
 }
 
+.writing-item + .writing-item {
+  padding-top: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
 .writing-meta,
 .writing-item > p {
   margin: 0;
@@ -491,6 +497,33 @@ button {
   border-left: 3px solid var(--link);
   font-size: 0.98rem;
   line-height: 1.5;
+}
+
+.article-body > .article-equation {
+  padding-block: 0.2rem;
+  overflow-x: auto;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.article-results {
+  padding-left: 1.35rem;
+  margin: 0 0 1.15rem;
+}
+
+.article-results li {
+  padding-left: 0.2rem;
+  margin-bottom: 0.9rem;
+  font-size: 1.07rem;
+  line-height: 1.62;
+}
+
+.article-results li:last-child {
+  margin-bottom: 0;
+}
+
+.article-results li::marker {
+  color: var(--link);
 }
 
 .article-body code {
@@ -687,6 +720,10 @@ button {
   .article-body > p {
     font-size: 1rem;
     line-height: 1.62;
+  }
+
+  .article-results li {
+    font-size: 1rem;
   }
 
   .article-body {
