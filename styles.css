@@ -30,6 +30,16 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.blog-index-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.blog-index-page main {
+  flex: 1;
+}
+
 a {
   color: var(--link);
   text-decoration-thickness: 1px;
