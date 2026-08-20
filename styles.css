@@ -435,6 +435,101 @@ button {
   font-size: 0.86rem;
 }
 
+.blog-index-page .intro-main {
+  max-width: none;
+}
+
+.blog-index-page .writing-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1rem;
+  margin-top: 2.25rem;
+  border-top: 0;
+}
+
+.blog-index-page .writing-item,
+.blog-index-page .writing-item + .writing-item {
+  display: flex;
+  min-width: 0;
+  min-height: 17.5rem;
+  padding: clamp(1.2rem, 1.8vw, 1.5rem);
+  margin-top: 0;
+  flex-direction: column;
+  border: 1px solid var(--border);
+}
+
+.blog-index-page .writing-item h3 {
+  margin-block: 0.55rem 0.7rem;
+  font-size: clamp(1.15rem, 1.65vw, 1.4rem);
+}
+
+.writing-tags {
+  display: flex;
+  padding: 0;
+  margin: 0.7rem 0 0;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  list-style: none;
+}
+
+.writing-tags li {
+  padding: 0.22rem 0.42rem;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  font-size: 0.68rem;
+  line-height: 1.25;
+}
+
+.writing-tags .tag-dynamical {
+  color: #245c78;
+  background: #edf6fa;
+  border-color: #b8d5e2;
+}
+
+.writing-tags .tag-interpretability {
+  color: #5c477d;
+  background: #f5f1f8;
+  border-color: #d3c7df;
+}
+
+.writing-tags .tag-neuroscience {
+  color: #356248;
+  background: #eef7f1;
+  border-color: #bfd8c7;
+}
+
+.writing-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.writing-thumbnail {
+  display: block;
+  border: 1px solid var(--border);
+}
+
+.writing-thumbnail img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 5 / 3;
+  object-fit: cover;
+}
+
+.writing-preview p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+.blog-index-page .writing-read {
+  align-self: flex-start;
+  padding-top: 1.25rem;
+  margin-top: auto;
+}
+
 .article {
   padding-block: clamp(1.75rem, 2.5vw, 2.25rem);
 }
@@ -699,6 +794,12 @@ button {
 
   .research-columns {
     gap: 1.25rem;
+  }
+
+  .blog-index-page .writing-list {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1.75rem;
   }
 
   .publication-item {
